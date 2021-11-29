@@ -15,6 +15,8 @@ class CountrieController extends Controller
     public function index()
     {
         //
+        return response()->json(countrie::all()->sortBy("name")->values()->all());
+
     }
 
     /**

@@ -15,6 +15,7 @@ class TeamController extends Controller
     public function index()
     {
         //
+        return response()->json(team::all()->sortBy("name")->values()->all());
     }
 
     /**

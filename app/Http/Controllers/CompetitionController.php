@@ -15,6 +15,8 @@ class CompetitionController extends Controller
     public function index()
     {
         //
+        return response()->json(competition::all()->sortBy("name")->values()->all());
+
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\match;
+use App\Models\soccerMatch;
 use Illuminate\Http\Request;
 
 class MatchController extends Controller
@@ -15,6 +15,8 @@ class MatchController extends Controller
     public function index()
     {
         //
+        return response()->json(soccerMatch::all());
+
     }
 
     /**
@@ -34,7 +36,7 @@ class MatchController extends Controller
      * @param  \App\Models\match  $match
      * @return \Illuminate\Http\Response
      */
-    public function show(match $match)
+    public function show(soccerMatch $match)
     {
         //
     }
@@ -46,7 +48,7 @@ class MatchController extends Controller
      * @param  \App\Models\match  $match
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, match $match)
+    public function update(Request $request, soccerMatch $match)
     {
         //
     }
@@ -57,7 +59,7 @@ class MatchController extends Controller
      * @param  \App\Models\match  $match
      * @return \Illuminate\Http\Response
      */
-    public function destroy(match $match)
+    public function destroy(soccerMatch $match)
     {
         //
     }

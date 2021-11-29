@@ -8,6 +8,7 @@ use App\Models\countrie;
 use App\Models\team;
 use App\Models\soccerMatch;
 use Illuminate\Support\Carbon;
+
 class importJsonController extends Controller
 {
     //
@@ -21,17 +22,16 @@ class importJsonController extends Controller
             $countrieName = $match["country"];
             $homeTeamName = $match["home"];
             $awayTeamName = $match["away"];
-            $matchTime = Carbon::parse($match["time"])->format("h:i:s"); 
+            $matchTime = Carbon::parse($match["time"])->format("h:i:s");
             $matchCompetitionName = $match["league"];
             $matchScoreHome = $match["score"]["home"];
             $matchScoreAway = $match["score"]["away"];
-            $matchDay = Carbon::createFromFormat("Y/d/m","2021/".$match["Day"])->format("Y/m/d"); 
+            $matchDay = Carbon::createFromFormat("Y/d/m", "2021/" . $match["Day"])->format("Y/m/d");
 
             $countrie = countrie::where("name", $countrieName)->first();
             // dd($countrie);
             if (!$countrie) {
                 $countrie = countrie::create(["name" => $countrieName]);
-
             }
             $homeTeam = team::where("name", $homeTeamName)->first();
             if (!$homeTeam) {
@@ -43,7 +43,7 @@ class importJsonController extends Controller
             }
             $competition = competition::where("name", $matchCompetitionName)->first();
             if (!$competition) {
-                $competition = competition::create(["name" => $matchCompetitionName]);
+                $competition = competition::create(["name" => $matchCompetitionName, "country_id" => $countrie->id]);
             }
 
             $match = soccerMatch::create([
@@ -53,8 +53,8 @@ class importJsonController extends Controller
                 "competetion_id" => $competition->id,
                 "time" => $matchTime,
                 "day" => $matchDay,
-                "scoreAway" => empty( $matchScoreAway) || $matchScoreAway == "-" ? Null : $matchScoreAway, 
-                "scoreHome" => empty( $matchScoreHome) || $matchScoreHome == "-"? Null : $matchScoreHome,
+                "scoreAway" => empty($matchScoreAway) || $matchScoreAway == "-" ? Null : $matchScoreAway,
+                "scoreHome" => empty($matchScoreHome) || $matchScoreHome == "-" ? Null : $matchScoreHome,
 
             ]);
         }

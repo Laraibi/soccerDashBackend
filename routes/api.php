@@ -26,3 +26,5 @@ route::resource("team", TeamController::class);
 route::resource("match", MatchController::class);
 route::resource("competition", CompetitionController::class);
 route::resource("countrie", CountrieController::class);
+
+route::get("matchsToDay",[MatchController::class,"matchsToDay"])->name("matchsToDay");

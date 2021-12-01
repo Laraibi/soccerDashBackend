@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\soccerMatch;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class MatchController extends Controller
 {
@@ -62,5 +63,10 @@ class MatchController extends Controller
     public function destroy(soccerMatch $match)
     {
         //
+    }
+
+    public function matchsToDay(){
+       $matchs=soccerMatch::where("Day",date("Y-m-d"))->with("awayTeam","homeTeam","Competition")->get();
+       return response()->json($matchs);
     }
 }

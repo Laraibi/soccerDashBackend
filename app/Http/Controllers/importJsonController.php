@@ -8,6 +8,7 @@ use App\Models\countrie;
 use App\Models\team;
 use App\Models\soccerMatch;
 use Illuminate\Support\Carbon;
+use PhpParser\Node\Expr\Cast\Array_;
 
 class importJsonController extends Controller
 {
@@ -18,6 +19,8 @@ class importJsonController extends Controller
         $filename = "matchsToDay.json";
         $path = storage_path() . "/app/public/json/${filename}";
         $json = json_decode(file_get_contents($path), true);
+        $counts = array("updatedCount" => 0, "insertedCount" => 0);
+
         foreach ($json as $match) {
             $countrieName = $match["country"];
             $homeTeamName = $match["home"];
@@ -46,19 +49,39 @@ class importJsonController extends Controller
                 $competition = competition::create(["name" => $matchCompetitionName, "country_id" => $countrie->id]);
             }
 
-            $match = soccerMatch::create([
+            $match = soccerMatch::where([
+                ["homeTeam_id", $homeTeam->id],
+                ["awayTeam_id", $awayTeam->id],
+                ["competetion_id", $competition->id],
+                ["day", $matchDay],
+            ])->first();
+            if (!$match) {
+                $match = soccerMatch::create([
+                    "homeTeam_id" => $homeTeam->id,
+                    "awayTeam_id" => $awayTeam->id,
+                    "competetion_id" => $competition->id,
+                    "time" => $matchTime,
+                    "day" => $matchDay,
+                    "scoreAway" => empty($matchScoreAway) || $matchScoreAway == "-" ? Null : $matchScoreAway,
+                    "scoreHome" => empty($matchScoreHome) || $matchScoreHome == "-" ? Null : $matchScoreHome,
+                ]);
+                $counts["insertedCount"] += 1;
+            } else {
+                $match->update([
+                    // "homeTeam_id" => $homeTeam->id,
+                    // "awayTeam_id" => $awayTeam->id,
+                    // "competetion_id" => $competition->id,
+                    "time" => $matchTime,
+                    // "day" => $matchDay,
+                    "scoreAway" => empty($matchScoreAway) || $matchScoreAway == "-" ? Null : $matchScoreAway,
+                    "scoreHome" => empty($matchScoreHome) || $matchScoreHome == "-" ? Null : $matchScoreHome,
 
-                "homeTeam_id" => $homeTeam->id,
-                "awayTeam_id" => $awayTeam->id,
-                "competetion_id" => $competition->id,
-                "time" => $matchTime,
-                "day" => $matchDay,
-                "scoreAway" => empty($matchScoreAway) || $matchScoreAway == "-" ? Null : $matchScoreAway,
-                "scoreHome" => empty($matchScoreHome) || $matchScoreHome == "-" ? Null : $matchScoreHome,
-
-            ]);
+                ]);
+                $counts["updatedCount"] += 1;
+            }
         }
-        dd(soccerMatch::all());
+        // dd(soccerMatch::all());
+        dd($counts);
         return;
     }
 }

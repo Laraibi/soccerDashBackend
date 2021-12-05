@@ -28,3 +28,4 @@ route::resource("competition", CompetitionController::class);
 route::resource("countrie", CountrieController::class);
 
 route::get("matchsToDay",[MatchController::class,"matchsToDay"])->name("matchsToDay");
+route::post("matchsInDay",[MatchController::class,"matchsInDay"])->name("matchsInDay");

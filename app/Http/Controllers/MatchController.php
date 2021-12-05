@@ -17,7 +17,6 @@ class MatchController extends Controller
     {
         //
         return response()->json(soccerMatch::all());
-
     }
 
     /**
@@ -65,8 +64,16 @@ class MatchController extends Controller
         //
     }
 
-    public function matchsToDay(){
-       $matchs=soccerMatch::where("Day",date("Y-m-d"))->with("awayTeam","homeTeam","Competition")->get();
-       return response()->json($matchs);
+    public function matchsToDay()
+    {
+        $matchs = soccerMatch::where("Day", date("Y-m-d"))->with("awayTeam", "homeTeam", "Competition")->get();
+        return response()->json($matchs);
+    }
+    public function matchsInDay(request $request)
+    {
+        $request->validate(["date" => "required"]);
+        $date = Carbon::parse($request->date);
+        $matchs = soccerMatch::where("Day", $date->format("Y-m-d"))->with("awayTeam", "homeTeam", "Competition")->get();
+        return response()->json($matchs);
     }
 }

@@ -22,10 +22,12 @@ class importJsonController extends Controller
         $counts = array("updatedCount" => 0, "insertedCount" => 0);
 
         foreach ($json as $match) {
+            // echo "time:" . $match["time"] . "</br>";
+            // continue;
             $countrieName = $match["country"];
             $homeTeamName = $match["home"];
             $awayTeamName = $match["away"];
-            $matchTime = Carbon::parse($match["time"])->format("h:i:s");
+            $matchTime = $match["time"] != "" ? Carbon::parse($match["time"])->format("H:i:s") : Null;
             $matchCompetitionName = $match["league"];
             $matchScoreHome = $match["score"]["home"];
             $matchScoreAway = $match["score"]["away"];

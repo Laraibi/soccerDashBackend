@@ -46,7 +46,10 @@ class importJsonController extends Controller
             if (!$awayTeam) {
                 $awayTeam = team::create(["name" => $awayTeamName]);
             }
-            $competition = competition::where("name", $matchCompetitionName)->first();
+            $competition = competition::where([
+                "name" => $matchCompetitionName,
+                "country_id" => $countrie->id
+            ])->first();
             if (!$competition) {
                 $competition = competition::create(["name" => $matchCompetitionName, "country_id" => $countrie->id]);
             }

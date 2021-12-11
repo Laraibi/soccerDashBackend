@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\team;
 use App\Models\competition;
+use App\Models\prono;
 class soccerMatch extends Model
 {
     use HasFactory;
@@ -28,5 +29,8 @@ class soccerMatch extends Model
     }
     public function competition(){
         return $this->belongsTo(competition::class,"competetion_id");
+    }
+    public function pronos(){
+        return $this->hasMany(prono::class,'match_id');
     }
 }

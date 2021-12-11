@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\prono;
 use Illuminate\Http\Request;
+use Ramsey\Uuid\Type\Integer;
 
 class PronoController extends Controller
 {
@@ -15,7 +16,7 @@ class PronoController extends Controller
     public function index(request $request)
     {
         //
-        return response()->json($request->user()->pronos->load('soccerMatch'));
+        return response()->json($request->user()->pronos->load('soccerMatch.awayTeam', 'soccerMatch.homeTeam'));
     }
 
     /**
@@ -44,7 +45,7 @@ class PronoController extends Controller
         $request->user()->solde -= $request->mise;
         $request->user()->save();
         $prono = $request->user()->pronos()->create($request->only(['match_id', 'prono', 'mise']));
-        $prono->load('soccerMatch');
+        $prono->load('soccerMatch.awayTeam', 'soccerMatch.homeTeam');
         return response()->json(['soldeUser' => $request->user()->solde, 'prono' => $prono], 200);
     }
 
@@ -88,8 +89,19 @@ class PronoController extends Controller
      * @param  \App\Models\prono  $prono
      * @return \Illuminate\Http\Response
      */
-    public function destroy(prono $prono)
+    public function destroy(int $id)
     {
         //
+        // $id=$prono;
+        $prono = prono::find($id);
+        if (!$prono) {
+            return response()->json(['error' => 'not found prono'], 404);
+        }
+        
+        auth()->user()->solde+=$prono->mise;
+        auth()->user()->save();
+        $solde=auth()->user()->solde;
+        $prono->delete();
+        return response()->json(array("deletedPronoId" => $id, "soldeUser" => $solde), 200);
     }
 }

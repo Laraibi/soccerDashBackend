@@ -16,7 +16,7 @@ class PronoController extends Controller
     public function index(request $request)
     {
         //
-        return response()->json($request->user()->pronos->load('soccerMatch.awayTeam', 'soccerMatch.homeTeam'));
+        return response()->json($request->user()->pronos->load('soccerMatch.awayTeam', 'soccerMatch.homeTeam')->sortBy('soccerMatch.DateTime')->values()->all());
     }
 
     /**

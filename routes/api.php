@@ -5,7 +5,7 @@ use App\Http\Controllers\authController;
 use App\Http\Controllers\PronoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\importJsonController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,6 +23,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post("signup", [authController::class, "register"]);
 Route::post("signin", [authController::class, "login"]);
+
+
+
+// import json File
+route::post("/importJson", [importJsonController::class, "importMatchs"]);
+route::get("/getAvailableJsonFiles", [importJsonController::class, "getAvailableFiles"]);
+
 
 
 // route::resource("team", TeamController::class);

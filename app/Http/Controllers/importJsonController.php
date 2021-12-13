@@ -8,16 +8,27 @@ use App\Models\countrie;
 use App\Models\team;
 use App\Models\soccerMatch;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Expr\Cast\Array_;
 
 class importJsonController extends Controller
 {
     //
-    public function importMatchs()
+    protected $pass = 'thePassWord';
+    public function getAvailableFiles()
     {
-
-        $filename = "matchsToDay.json";
-        $path = storage_path() . "/app/public/json/${filename}";
+        $files = Storage::files('\public\json\\');
+        return response()->json($files);
+    }
+    public function importMatchs(Request $request)
+    {
+        $request->validate(['fileName' => 'required', 'Password' => 'required']);
+        if ($request->Password != $this->pass) {
+            return response()->json('PassWord Innexact', 302);
+        }
+        $filename = $request->fileName;
+        // $path = storage_path() . "\\app\\public\\json\\${filename}";
+        $path =  storage_path() . '\\app\\' . str_replace('/', '\\', $filename);
         $json = json_decode(file_get_contents($path), true);
         $counts = array("updatedCount" => 0, "insertedCount" => 0);
 
@@ -86,7 +97,8 @@ class importJsonController extends Controller
             }
         }
         // dd(soccerMatch::all());
-        dd($counts);
-        return;
+        // dd($counts);
+
+        return response()->json(['counts' => $counts, 'fileName' => $filename]);
     }
 }

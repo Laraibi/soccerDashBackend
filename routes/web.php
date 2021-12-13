@@ -18,4 +18,3 @@ Route::get('/', function () {
 });
 
 
-route::get("/testImportJson", [importJsonController::class, "importMatchs"]);

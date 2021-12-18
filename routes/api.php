@@ -41,4 +41,7 @@ route::post("matchsInDay", [MatchController::class, "matchsInDay"])->name("match
 route::middleware('auth:sanctum')->group(function () {
     Route::get("logout", [authController::class, "logout"]);
     route::resource("Prono", PronoController::class);
+    route::get("/allUsersPronos", [PronoController::class,'usersPronosStats']);
+
+
 });

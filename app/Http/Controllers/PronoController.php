@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\prono;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Type\Integer;
 
@@ -103,5 +104,8 @@ class PronoController extends Controller
         $solde=auth()->user()->solde;
         $prono->delete();
         return response()->json(array("deletedPronoId" => $id, "soldeUser" => $solde), 200);
+    }
+    public function usersPronosStats(){
+        return response()->json(User::all()->load('pronos'));
     }
 }

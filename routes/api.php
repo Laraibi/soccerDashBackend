@@ -27,8 +27,6 @@ Route::post("signin", [authController::class, "login"]);
 
 
 // import json File
-route::post("/importJson", [importJsonController::class, "importMatchs"]);
-route::get("/getAvailableJsonFiles", [importJsonController::class, "getAvailableFiles"]);
 
 
 
@@ -39,6 +37,8 @@ route::get("/getAvailableJsonFiles", [importJsonController::class, "getAvailable
 route::get("matchsToDay", [MatchController::class, "matchsToDay"])->name("matchsToDay");
 route::post("matchsInDay", [MatchController::class, "matchsInDay"])->name("matchsInDay");
 route::middleware('auth:sanctum')->group(function () {
+    route::post("/importJson", [importJsonController::class, "importMatchs"]);
+    route::get("/getAvailableJsonFiles", [importJsonController::class, "getAvailableFiles"]);
     Route::get("logout", [authController::class, "logout"]);
     route::resource("Prono", PronoController::class);
     route::get("/allUsersPronos", [PronoController::class,'usersPronosStats']);

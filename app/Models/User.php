@@ -44,4 +44,7 @@ class User extends Authenticatable
     public function pronos(){
         return $this->hasMany(prono::class);
     }
+    public function imports(){
+        return $this->hasMany(prono::class);
+    }
 }

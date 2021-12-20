@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\competition;
 use Illuminate\Http\Request;
 use App\Models\countrie;
+use App\Models\filesData;
 use App\Models\team;
 use App\Models\soccerMatch;
 use Illuminate\Support\Carbon;
@@ -18,7 +19,16 @@ class importJsonController extends Controller
     public function getAvailableFiles()
     {
         $files = Storage::files('\public\json\\');
-        return response()->json($files);
+        $filesCollection = collect($files);
+        $imports = $filesCollection->map(function ($file) {
+            $fileImport = filesData::where('fileName', $file)->first();
+            return [
+                'fileName' => $file,
+                'isImported' => $fileImport  ? true : false,
+                'user' => $fileImport  ? $fileImport->User : NULL,
+            ];
+        });
+        return response()->json($imports);
     }
     public function importMatchs(Request $request)
     {
@@ -98,7 +108,7 @@ class importJsonController extends Controller
         }
         // dd(soccerMatch::all());
         // dd($counts);
-
-        return response()->json(['counts' => $counts, 'fileName' => $filename]);
+        $import = filesData::create(['user_id' => auth()->user()->id, 'fileName' => $filename])->load('User');
+        return response()->json(['counts' => $counts, 'fileName' => $filename, 'import' => $import]);
     }
 }

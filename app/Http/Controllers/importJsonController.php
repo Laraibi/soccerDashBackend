@@ -37,8 +37,22 @@ class importJsonController extends Controller
             return response()->json('PassWord Innexact', 302);
         }
         $filename = $request->fileName;
-        // $path = storage_path() . "\\app\\public\\json\\${filename}";
         $path =  storage_path() . '\\app\\' . str_replace('/', '\\', $filename);
+       return $this->importMatchsFile($path);
+    }
+    public function importUploadedFile(Request $request)
+    {
+        $request->validate(['file' => 'required', 'Password' => 'required']);
+        if ($request->Password != $this->pass) {
+            return response()->json('PassWord Innexact', 302);
+        }
+        $filename = $request->fileName;
+        $path =  storage_path() . '\\app\\' . str_replace('/', '\\', $filename);
+        $this->importMatchsFile($path);
+    }
+    public function importMatchsFile(String $filePath)
+    {
+        $path = $filePath;
         $json = json_decode(file_get_contents($path), true);
         $counts = array("updatedCount" => 0, "insertedCount" => 0);
 
@@ -108,7 +122,7 @@ class importJsonController extends Controller
         }
         // dd(soccerMatch::all());
         // dd($counts);
-        $import = filesData::create(['user_id' => auth()->user()->id, 'fileName' => $filename])->load('User');
-        return response()->json(['counts' => $counts, 'fileName' => $filename, 'import' => $import]);
+        $import = filesData::create(['user_id' => auth()->user()->id, 'fileName' => $path])->load('User');
+        return response()->json(['counts' => $counts, 'fileName' => $path, 'import' => $import]);
     }
 }

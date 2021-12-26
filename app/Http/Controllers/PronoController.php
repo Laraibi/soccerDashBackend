@@ -39,15 +39,12 @@ class PronoController extends Controller
     public function store(Request $request)
     {
         //
-        $request->validate(['match_id' => 'required', 'prono' => 'required|max:1|in:x,1,2', 'mise' => 'required|numeric|min:5']);
-        if ($request->user()->solde < $request->mise) {
-            return response('Solde Inssufisant', 404);
-        }
-        $request->user()->solde -= $request->mise;
-        $request->user()->save();
-        $prono = $request->user()->pronos()->create($request->only(['match_id', 'prono', 'mise']));
+        $request->validate(['match_id' => 'required', 'prono' => 'required|max:1|in:x,1,2']);
+
+
+        $prono = $request->user()->pronos()->create($request->only(['match_id', 'prono']));
         $prono->load('soccerMatch.awayTeam', 'soccerMatch.homeTeam');
-        return response()->json(['soldeUser' => $request->user()->solde, 'prono' => $prono], 200);
+        return response()->json(['prono' => $prono], 200);
     }
 
     /**
@@ -98,14 +95,13 @@ class PronoController extends Controller
         if (!$prono) {
             return response()->json(['error' => 'not found prono'], 404);
         }
-        
-        auth()->user()->solde+=$prono->mise;
-        auth()->user()->save();
-        $solde=auth()->user()->solde;
+
+
         $prono->delete();
-        return response()->json(array("deletedPronoId" => $id, "soldeUser" => $solde), 200);
+        return response()->json(array("deletedPronoId" => $id), 200);
     }
-    public function usersPronosStats(){
+    public function usersPronosStats()
+    {
         return response()->json(User::all()->load('pronos'));
     }
 }

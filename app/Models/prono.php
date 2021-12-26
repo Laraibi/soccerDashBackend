@@ -11,7 +11,7 @@ use function PHPUnit\Framework\isNull;
 class prono extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'match_id', 'mise', "prono", "mise"];
+    protected $fillable = ['user_id', 'match_id', "prono", "mise"];
     protected $appends=["Result"];
     public function  user()
     {

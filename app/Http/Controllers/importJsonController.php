@@ -38,7 +38,7 @@ class importJsonController extends Controller
         }
         $filename = $request->fileName;
         $path =  storage_path() . '\\app\\' . str_replace('/', '\\', $filename);
-       return $this->importMatchsFile($path);
+        return $this->importMatchsFile($path);
     }
     public function importUploadedFile(Request $request)
     {
@@ -66,7 +66,13 @@ class importJsonController extends Controller
             $matchCompetitionName = $match["league"];
             $matchScoreHome = $match["score"]["home"];
             $matchScoreAway = $match["score"]["away"];
-            $matchDay = Carbon::createFromFormat("Y/d/m", "2021/" . $match["Day"])->format("Y/m/d");
+            $month = explode("/", $match["Day"])[1];
+            $year = 2022;
+            if ($month == 12) {
+                $year = 2021;
+            }
+            // return $year;
+            $matchDay = Carbon::createFromFormat("Y/d/m", $year."/" . $match["Day"])->format("Y/m/d");
 
             $countrie = countrie::where("name", $countrieName)->first();
             // dd($countrie);
